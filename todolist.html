@@ -1,0 +1,1570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium Task Master</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 25%, #16213e 50%, #0f3460 75%, #533483 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
+                        radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.2) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: -1;
+            animation: backgroundPulse 8s ease-in-out infinite alternate;
+        }
+
+        @keyframes backgroundPulse {
+            0% { opacity: 0.8; }
+            100% { opacity: 1; }
+        }
+
+        /* Login Page Styles */
+        .login-page {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        .login-container {
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 1.5rem;
+            margin-top: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3),
+                        0 0 0 1px rgba(255, 255, 255, 0.05),
+                        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            animation: slideIn 1s ease-out;
+            width: 450px;
+           
+            position: relative;
+           
+          
+        }
+
+        .login-container::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.03), transparent);
+            animation: shimmer 3s ease-in-out infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(50px) scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .logo h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, #ffffff, #a78bfa, #06b6d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 30px rgba(167, 139, 250, 0.5));
+            animation: glow 2s ease-in-out infinite alternate;
+            margin-bottom: 0.3rem;
+        }
+
+        .logo p {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 14px;
+        }
+
+        .auth-tabs {
+            display: flex;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 16px;
+            padding: 0.5rem;
+            margin-bottom: 1rem;
+            border: 1px solid rgba(167, 139, 250, 0.2);
+        }
+
+        .auth-tab {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: rgba(255, 255, 255, 0.6);
+            padding: 0.5rem 1rem;
+            border-radius: 12px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .auth-tab.active {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: #ffffff;
+            box-shadow: 0 4px 15px rgba(167, 139, 250, 0.3);
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+            position: relative;
+        }
+
+        .form-control {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(167, 139, 250, 0.3);
+            border-radius: 12px;
+            color: #ffffff;
+            padding: 1rem 1rem 1rem 3rem;
+            transition: all 0.3s ease;
+            width: 100%;
+            font-size: 1rem;
+        }
+
+        .form-control:focus {
+            background: rgba(0, 0, 0, 0.5);
+            border-color: #a78bfa;
+            box-shadow: 0 0 20px rgba(167, 139, 250, 0.3);
+            color: #ffffff;
+            outline: none;
+            transform: translateY(-2px);
+        }
+
+        .form-control::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .form-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgba(167, 139, 250, 0.8);
+            font-size: 1.1rem;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.6);
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .password-toggle:hover {
+            color: #a78bfa;
+        }
+
+        .btn-login {
+            background: linear-gradient(45deg, #667eea, #764ba2, #a78bfa);
+            border: none;
+            border-radius: 12px;
+            color: #ffffff;
+            padding: 1rem 2rem;
+            font-weight: 600;
+            font-size: 1.1rem;
+            width: 100%;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(167, 139, 250, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-login::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn-login:hover::before {
+            left: 100%;
+        }
+
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(167, 139, 250, 0.6);
+            background: linear-gradient(45deg, #7c3aed, #8b5cf6, #a78bfa);
+        }
+
+        .btn-login:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 1.5rem 0;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(167, 139, 250, 0.3), transparent);
+        }
+
+        .divider span {
+            padding: 0 1rem;
+            font-size: 0.9rem;
+        }
+
+        .social-login {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .btn-social {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(167, 139, 250, 0.3);
+            border-radius: 12px;
+            color: #ffffff;
+            padding: 0.75rem 1rem;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            cursor: pointer;
+        }
+
+        .btn-social:hover {
+            background: rgba(167, 139, 250, 0.2);
+            border-color: #a78bfa;
+            transform: translateY(-1px);
+            color: #ffffff;
+        }
+
+        .forgot-password {
+            text-align: center;
+            margin-top: 1rem;
+        }
+
+        .forgot-password a {
+            color: #a78bfa;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .forgot-password a:hover {
+            color: #ffffff;
+            text-shadow: 0 0 10px rgba(167, 139, 250, 0.5);
+        }
+
+        .error-message, .success-message {
+            border-radius: 8px;
+            padding: 0.75rem;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            display: none;
+        }
+
+        .error-message {
+            background: rgba(231, 76, 60, 0.2);
+            border: 1px solid rgba(231, 76, 60, 0.5);
+            color: #ffffff;
+        }
+
+        .success-message {
+            background: rgba(46, 204, 113, 0.2);
+            border: 1px solid rgba(46, 204, 113, 0.5);
+            color: #ffffff;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            margin-top: 1rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .loading i {
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .glass-element {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+        }
+
+        .glass-1 {
+            width: 100px;
+            height: 100px;
+            top: 10%;
+            left: 5%;
+            animation: floatSlow 8s ease-in-out infinite;
+        }
+
+        .glass-2 {
+            width: 150px;
+            height: 150px;
+            top: 60%;
+            right: 10%;
+            animation: floatSlow 6s ease-in-out infinite reverse;
+        }
+
+        .glass-3 {
+            width: 80px;
+            height: 80px;
+            bottom: 20%;
+            left: 15%;
+            animation: floatSlow 10s ease-in-out infinite;
+        }
+
+        @keyframes floatSlow {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-30px) rotate(180deg); }
+        }
+
+        /* Todo App Styles */
+        .todo-app {
+            display: none;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .main-card {
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 2.5rem;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3),
+                        0 0 0 1px rgba(255, 255, 255, 0.05),
+                        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 2rem;
+            background: linear-gradient(45deg, #ffffff, #a78bfa, #06b6d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 30px rgba(167, 139, 250, 0.5));
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from { filter: drop-shadow(0 0 20px rgba(167, 139, 250, 0.3)); }
+            to { filter: drop-shadow(0 0 40px rgba(167, 139, 250, 0.8)); }
+        }
+
+        .input-section {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(167, 139, 250, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        }
+
+        .task-input {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr auto auto auto;
+            gap: 1rem;
+            align-items: end;
+        }
+
+        .form-select {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(167, 139, 250, 0.3);
+            border-radius: 12px;
+            color: #ffffff;
+            padding: 0.75rem 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-select:focus {
+            background: rgba(0, 0, 0, 0.5);
+            border-color: #a78bfa;
+            box-shadow: 0 0 20px rgba(167, 139, 250, 0.3);
+            color: #ffffff;
+            outline: none;
+        }
+
+        .form-select option {
+            background: #1a1a2e;
+            color: #ffffff;
+        }
+
+        .btn {
+            border-radius: 12px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #667eea, #764ba2, #a78bfa);
+            padding: 0.75rem 1.5rem;
+            box-shadow: 0 4px 15px rgba(167, 139, 250, 0.4);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(167, 139, 250, 0.6);
+            background: linear-gradient(45deg, #7c3aed, #8b5cf6, #a78bfa);
+        }
+
+        .btn-danger {
+            background: linear-gradient(45deg, #e74c3c, #c0392b);
+            padding: 0.75rem 1.5rem;
+            box-shadow: 0 4px 15px rgba(231, 76, 60, 0.4);
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(231, 76, 60, 0.6);
+        }
+
+        .categories-filter {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .category-chip {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(167, 139, 250, 0.3);
+            border-radius: 20px;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+            color: #ffffff;
+        }
+
+        .category-chip:hover, .category-chip.active {
+            background: rgba(167, 139, 250, 0.3);
+            border-color: #a78bfa;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(167, 139, 250, 0.3);
+        }
+
+        .task-item {
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(167, 139, 250, 0.2);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+            animation: slideInTask 0.5s ease-out;
+            color: #ffffff;
+        }
+
+        @keyframes slideInTask {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .task-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+            background: rgba(0, 0, 0, 0.4);
+            border-color: #a78bfa;
+        }
+
+        .task-content {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .task-checkbox {
+            width: 20px;
+            height: 20px;
+            accent-color: #667eea;
+        }
+
+        .task-info {
+            flex: 1;
+        }
+
+        .task-text {
+            font-size: 1.1rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+
+        .task-meta {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.85rem;
+            opacity: 0.8;
+        }
+
+        .priority-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .priority-high { background: rgba(231, 76, 60, 0.8); }
+        .priority-medium { background: rgba(241, 196, 15, 0.8); }
+        .priority-low { background: rgba(46, 204, 113, 0.8); }
+
+        .category-tag {
+            background: rgba(103, 126, 234, 0.8);
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .task-completed-badge {
+            background: rgba(46, 204, 113, 0.8);
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: white;
+        }
+
+        .task-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-sm {
+            padding: 0.5rem;
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 16px;
+            padding: 1.5rem;
+            text-align: center;
+            border: 1px solid rgba(167, 139, 250, 0.2);
+            color: #ffffff;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            transition: transform 0.2s ease;
+        }
+
+        .completed { 
+            opacity: 0.6; 
+        }
+        
+        .completed .task-text {
+            text-decoration: line-through;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .search-box {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(167, 139, 250, 0.3);
+            border-radius: 12px;
+            padding: 0.75rem 1rem;
+            margin-bottom: 1rem;
+            width: 100%;
+            color: #ffffff;
+        }
+
+        .search-box:focus {
+            outline: none;
+            border-color: #a78bfa;
+            box-shadow: 0 0 20px rgba(167, 139, 250, 0.3);
+        }
+
+        .search-box::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .header-actions {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+            z-index: 100;
+        }
+
+        .header-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50px;
+            padding: 0.75rem;
+            color: white;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .header-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .user-info {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(167, 139, 250, 0.2);
+            border-radius: 16px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            color: #ffffff;
+        }
+
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        /* Notification Styles */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(46, 204, 113, 0.95);
+            backdrop-filter: blur(10px);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            animation: slideInRight 0.5s ease-out;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(100px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .notification.fade-out {
+            animation: fadeOut 0.5s ease-out forwards;
+        }
+
+        @keyframes fadeOut {
+            to {
+                opacity: 0;
+                transform: translateX(100px);
+            }
+        }
+
+        @keyframes celebrate {
+            0%, 100% { transform: scale(1) rotate(0deg); }
+            25% { transform: scale(1.1) rotate(-5deg); }
+            50% { transform: scale(1.2) rotate(5deg); }
+            75% { transform: scale(1.1) rotate(-2deg); }
+        }
+
+        .celebrate {
+            animation: celebrate 0.6s ease-in-out;
+        }
+
+        @media (max-width: 768px) {
+            .task-input {
+                grid-template-columns: 1fr;
+            }
+            
+            .main-card {
+                padding: 1.5rem;
+                margin: 1rem;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+
+            .notification {
+                right: 20px;
+                left: 20px;
+                width: auto;
+            }
+
+            .login-container {
+                margin: 1rem;
+                padding: 2rem;
+            }
+
+            .logo h1 {
+                font-size: 2rem;
+            }
+
+            .social-login {
+                grid-template-columns: 1fr;
+            }
+
+            .header-actions {
+                position: relative;
+                top: auto;
+                right: auto;
+                justify-content: center;
+                margin-bottom: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Page -->
+    <div id="loginPage" class="login-page">
+        <!-- Floating Glass Elements -->
+        <div class="glass-element glass-1"></div>
+        <div class="glass-element glass-2"></div>
+        <div class="glass-element glass-3"></div>
+
+        <div class="login-container">
+            <!-- Logo Section -->
+            <div class="logo">
+                <h1><i class="fas fa-rocket"></i> TASK MASTER</h1>
+                <p>Your productivity companion</p>
+            </div>
+
+            <!-- Auth Tabs -->
+            <div class="auth-tabs">
+                <button class="auth-tab active" onclick="switchTab('login')">
+                    <i class="fas fa-sign-in-alt"></i> Login
+                </button>
+                <button class="auth-tab" onclick="switchTab('signup')">
+                    <i class="fas fa-user-plus"></i> Sign Up
+                </button>
+            </div>
+
+            <!-- Error/Success Messages -->
+            <div class="error-message" id="errorMessage">
+                <i class="fas fa-exclamation-circle"></i> <span id="errorText"></span>
+            </div>
+            <div class="success-message" id="successMessage">
+                <i class="fas fa-check-circle"></i> <span id="successText"></span>
+            </div>
+
+            <!-- Login Form -->
+            <form id="authForm">
+                <div class="form-group">
+                    <i class="fas fa-envelope form-icon"></i>
+                    <input type="email" class="form-control" id="email" placeholder="Enter your email" required>
+                </div>
+
+                <div class="form-group">
+                    <i class="fas fa-lock form-icon"></i>
+                    <input type="password" class="form-control" id="password" placeholder="Enter your password" required>
+                    <button type="button" class="password-toggle" onclick="togglePassword()">
+                        <i class="fas fa-eye" id="passwordToggleIcon"></i>
+                    </button>
+                </div>
+
+                <div class="form-group" id="nameGroup" style="display: none;">
+                    <i class="fas fa-user form-icon"></i>
+                    <input type="text" class="form-control" id="fullName" placeholder="Enter your full name">
+                </div>
+
+                <div class="form-group" id="confirmPasswordGroup" style="display: none;">
+                    <i class="fas fa-lock form-icon"></i>
+                    <input type="password" class="form-control" id="confirmPassword" placeholder="Confirm your password">
+                    <button type="button" class="password-toggle" onclick="toggleConfirmPassword()">
+                        <i class="fas fa-eye" id="confirmPasswordToggleIcon"></i>
+                    </button>
+                </div>
+
+                <button type="submit" class="btn-login" id="authButton">
+                    <i class="fas fa-sign-in-alt"></i> Login
+                </button>
+            </form>
+
+            <!-- Divider -->
+            <div class="divider">
+                <span>OR</span>
+            </div>
+
+            <!-- Social Login -->
+            <div class="social-login">
+                <button class="btn-social" onclick="socialLogin('google')">
+                    <i class="fab fa-google"></i> Google
+                </button>
+                <button class="btn-social" onclick="socialLogin('github')">
+                    <i class="fab fa-github"></i> GitHub
+                </button>
+            </div>
+
+            <!-- Forgot Password -->
+            <div class="forgot-password">
+                <a onclick="showForgotPassword()">Forgot your password?</a>
+            </div>
+
+            <!-- Loading Indicator -->
+            <div class="loading" id="loading">
+                <i class="fas fa-spinner"></i> Processing...
+            </div>
+        </div>
+    </div>
+
+    <!-- Todo App -->
+    <div id="todoApp" class="todo-app">
+        <!-- Header Actions -->
+        <div class="header-actions">
+            <button class="header-btn" onclick="toggleTheme()" title="Toggle Theme">
+                <i class="fas fa-moon"></i>
+            </button>
+            <button class="header-btn" onclick="logout()" title="Logout">
+                <i class="fas fa-sign-out-alt"></i>
+            </button>
+        </div>
+
+        <div class="container">
+            <div class="main-card">
+                <!-- User Info -->
+                <div class="user-info">
+                    <div class="user-avatar" id="userAvatar">A</div>
+                    <div>
+                        <h5 id="userName">Anonymous User</h5>
+                        <small id="userEmail">user@example.com</small>
+                    </div>
+                </div>
+
+                <h1><i class="fas fa-tasks"></i> Task Master</h1>
+                
+                <!-- Stats Grid -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalTasks">0</div>
+                        <div>Total Tasks</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="completedTasks">0</div>
+                        <div>Completed</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="pendingTasks">0</div>
+                        <div>Pending</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="completionRate">0%</div>
+                        <div>Completion Rate</div>
+                    </div>
+                </div>
+
+                <!-- Input Section -->
+                <div class="input-section">
+                    <div class="task-input">
+                        <div class="form-group">
+                            <input type="text" class="form-control" id="taskInput" placeholder="What needs to be done?" required>
+                        </div>
+                        <div class="form-group">
+                            <select class="form-select" id="categorySelect">
+                                <option value="personal">Personal</option>
+                                <option value="work">Work</option>
+                                <option value="study">Study</option>
+                                <option value="health">Health</option>
+                                <option value="shopping">Shopping</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <select class="form-select" id="prioritySelect">
+                                <option value="low">Low</option>
+                                <option value="medium">Medium</option>
+                                <option value="high">High</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <input type="date" class="form-control" id="dueDateInput">
+                        </div>
+                        <button class="btn btn-primary" onclick="addTask()">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                        <button class="btn btn-danger" onclick="clearCompleted()">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                        <button class="btn btn-primary" onclick="exportTasks()">
+                            <i class="fas fa-download"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Search and Filter -->
+                <input type="text" class="search-box" id="searchInput" placeholder="Search tasks..." onkeyup="filterTasks()">
+
+                <!-- Categories Filter -->
+                <div class="categories-filter">
+                    <div class="category-chip active" onclick="filterByCategory('all')">All</div>
+                    <div class="category-chip" onclick="filterByCategory('personal')">Personal</div>
+                    <div class="category-chip" onclick="filterByCategory('work')">Work</div>
+                    <div class="category-chip" onclick="filterByCategory('study')">Study</div>
+                    <div class="category-chip" onclick="filterByCategory('health')">Health</div>
+                    <div class="category-chip" onclick="filterByCategory('shopping')">Shopping</div>
+                </div>
+
+                <!-- Tasks List -->
+                <div id="tasksList">
+                    <!-- Tasks will be dynamically added here -->
+                </div>
+
+                <!-- Empty State -->
+                <div id="emptyState" style="text-align: center; padding: 3rem; color: rgba(255, 255, 255, 0.6); display: none;">
+                    <i class="fas fa-clipboard-list" style="font-size: 4rem; margin-bottom: 1rem; opacity: 0.3;"></i>
+                    <h3>No tasks yet</h3>
+                    <p>Add your first task to get started!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let tasks = [];
+        let currentUser = null;
+        let isSignupMode = false;
+        let activeFilter = 'all';
+
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', function() {
+            loadUserData();
+            
+            // Set today's date as default
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('dueDateInput').value = today;
+
+            // Load tasks from localStorage
+            const savedTasks = localStorage.getItem('tasks');
+            if (savedTasks) {
+                tasks = JSON.parse(savedTasks);
+                renderTasks();
+                updateStats();
+            }
+
+            // Check if user is already logged in
+            const savedUser = localStorage.getItem('currentUser');
+            if (savedUser) {
+                currentUser = JSON.parse(savedUser);
+                showTodoApp();
+            }
+
+            // Form submission
+            document.getElementById('authForm').addEventListener('submit', handleAuth);
+        });
+
+        // Switch between login and signup tabs
+        function switchTab(mode) {
+            isSignupMode = mode === 'signup';
+            const tabs = document.querySelectorAll('.auth-tab');
+            const nameGroup = document.getElementById('nameGroup');
+            const confirmPasswordGroup = document.getElementById('confirmPasswordGroup');
+            const authButton = document.getElementById('authButton');
+
+            tabs.forEach(tab => tab.classList.remove('active'));
+            event.target.classList.add('active');
+
+            if (isSignupMode) {
+                nameGroup.style.display = 'block';
+                confirmPasswordGroup.style.display = 'block';
+                authButton.innerHTML = '<i class="fas fa-user-plus"></i> Sign Up';
+            } else {
+                nameGroup.style.display = 'none';
+                confirmPasswordGroup.style.display = 'none';
+                authButton.innerHTML = '<i class="fas fa-sign-in-alt"></i> Login';
+            }
+
+            hideMessages();
+        }
+
+        // Toggle password visibility
+        function togglePassword() {
+            const passwordInput = document.getElementById('password');
+            const toggleIcon = document.getElementById('passwordToggleIcon');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleIcon.classList.replace('fa-eye', 'fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                toggleIcon.classList.replace('fa-eye-slash', 'fa-eye');
+            }
+        }
+
+        // Toggle confirm password visibility
+        function toggleConfirmPassword() {
+            const passwordInput = document.getElementById('confirmPassword');
+            const toggleIcon = document.getElementById('confirmPasswordToggleIcon');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleIcon.classList.replace('fa-eye', 'fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                toggleIcon.classList.replace('fa-eye-slash', 'fa-eye');
+            }
+        }
+
+        // Handle authentication
+        async function handleAuth(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const fullName = document.getElementById('fullName').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            // Validation
+            if (isSignupMode) {
+                if (!fullName.trim()) {
+                    showError('Please enter your full name');
+                    return;
+                }
+                if (password !== confirmPassword) {
+                    showError('Passwords do not match');
+                    return;
+                }
+                if (password.length < 6) {
+                    showError('Password must be at least 6 characters long');
+                    return;
+                }
+            }
+
+            showLoading(true);
+
+            try {
+                // Simulate API call delay
+                await new Promise(resolve => setTimeout(resolve, 1500));
+
+                if (isSignupMode) {
+                    // Signup logic
+                    const existingUser = getUserFromStorage(email);
+                    if (existingUser) {
+                        showError('User already exists with this email');
+                        return;
+                    }
+
+                    const newUser = {
+                        id: Date.now(),
+                        email: email,
+                        name: fullName,
+                        password: password, // In real app, this should be hashed
+                        createdAt: new Date().toISOString()
+                    };
+
+                    saveUserToStorage(newUser);
+                    currentUser = newUser;
+                    showSuccess('Account created successfully! Welcome aboard!');
+                    
+                    setTimeout(() => {
+                        showTodoApp();
+                    }, 1500);
+
+                } else {
+                    // Login logic
+                    const user = getUserFromStorage(email);
+                    if (!user || user.password !== password) {
+                        showError('Invalid email or password');
+                        return;
+                    }
+
+                    currentUser = user;
+                    localStorage.setItem('currentUser', JSON.stringify(user));
+                    showSuccess('Login successful! Welcome back!');
+                    
+                    setTimeout(() => {
+                        showTodoApp();
+                    }, 1500);
+                }
+
+            } catch (error) {
+                showError('Something went wrong. Please try again.');
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        // Social login placeholder
+        function socialLogin(provider) {
+            showSuccess(`${provider} login will be available soon!`);
+        }
+
+        // Show forgot password
+        function showForgotPassword() {
+            const email = prompt('Enter your email address:');
+            if (email) {
+                showSuccess('Password reset link sent to your email!');
+            }
+        }
+
+        // User storage functions
+        function saveUserToStorage(user) {
+            let users = JSON.parse(localStorage.getItem('users') || '[]');
+            users.push(user);
+            localStorage.setItem('users', JSON.stringify(users));
+        }
+
+        function getUserFromStorage(email) {
+            const users = JSON.parse(localStorage.getItem('users') || '[]');
+            return users.find(user => user.email === email);
+        }
+
+        // Load user data
+        function loadUserData() {
+            if (currentUser) {
+                document.getElementById('userName').textContent = currentUser.name;
+                document.getElementById('userEmail').textContent = currentUser.email;
+                document.getElementById('userAvatar').textContent = currentUser.name.charAt(0).toUpperCase();
+            }
+        }
+
+        // Show todo app
+        function showTodoApp() {
+            document.getElementById('loginPage').style.display = 'none';
+            document.getElementById('todoApp').style.display = 'block';
+            loadUserData();
+            renderTasks();
+            updateStats();
+        }
+
+        // Logout
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                currentUser = null;
+                localStorage.removeItem('currentUser');
+                document.getElementById('loginPage').style.display = 'flex';
+                document.getElementById('todoApp').style.display = 'none';
+                
+                // Reset form
+                document.getElementById('authForm').reset();
+                hideMessages();
+            }
+        }
+
+        // Show/hide messages
+        function showError(message) {
+            hideMessages();
+            document.getElementById('errorText').textContent = message;
+            document.getElementById('errorMessage').style.display = 'block';
+        }
+
+        function showSuccess(message) {
+            hideMessages();
+            document.getElementById('successText').textContent = message;
+            document.getElementById('successMessage').style.display = 'block';
+        }
+
+        function hideMessages() {
+            document.getElementById('errorMessage').style.display = 'none';
+            document.getElementById('successMessage').style.display = 'none';
+        }
+
+        function showLoading(show) {
+            const loading = document.getElementById('loading');
+            const authButton = document.getElementById('authButton');
+            
+            if (show) {
+                loading.style.display = 'block';
+                authButton.disabled = true;
+            } else {
+                loading.style.display = 'none';
+                authButton.disabled = false;
+            }
+        }
+
+        // Task management functions
+        function addTask() {
+            const taskInput = document.getElementById('taskInput');
+            const categorySelect = document.getElementById('categorySelect');
+            const prioritySelect = document.getElementById('prioritySelect');
+            const dueDateInput = document.getElementById('dueDateInput');
+
+            const taskText = taskInput.value.trim();
+            if (!taskText) {
+                showNotification('Please enter a task!', 'error');
+                return;
+            }
+
+            const newTask = {
+                id: Date.now(),
+                text: taskText,
+                category: categorySelect.value,
+                priority: prioritySelect.value,
+                dueDate: dueDateInput.value,
+                completed: false,
+                createdAt: new Date().toISOString(),
+                userId: currentUser?.id
+            };
+
+            tasks.unshift(newTask);
+            saveTasks();
+            renderTasks();
+            updateStats();
+
+            // Reset form
+            taskInput.value = '';
+            const today = new Date().toISOString().split('T')[0];
+            dueDateInput.value = today;
+
+            showNotification('Task added successfully!', 'success');
+        }
+
+        function toggleTask(id) {
+            const task = tasks.find(t => t.id === id);
+            if (task) {
+                task.completed = !task.completed;
+                task.completedAt = task.completed ? new Date().toISOString() : null;
+                
+                saveTasks();
+                renderTasks();
+                updateStats();
+
+                if (task.completed) {
+                    showNotification('Task completed! 🎉', 'success');
+                    // Add celebration animation
+                    const taskElement = document.querySelector(`[data-task-id="${id}"]`);
+                    if (taskElement) {
+                        taskElement.classList.add('celebrate');
+                        setTimeout(() => taskElement.classList.remove('celebrate'), 600);
+                    }
+                }
+            }
+        }
+
+        function deleteTask(id) {
+            if (confirm('Are you sure you want to delete this task?')) {
+                tasks = tasks.filter(t => t.id !== id);
+                saveTasks();
+                renderTasks();
+                updateStats();
+                showNotification('Task deleted!', 'success');
+            }
+        }
+
+        function editTask(id) {
+            const task = tasks.find(t => t.id === id);
+            if (task) {
+                const newText = prompt('Edit task:', task.text);
+                if (newText && newText.trim()) {
+                    task.text = newText.trim();
+                    task.updatedAt = new Date().toISOString();
+                    saveTasks();
+                    renderTasks();
+                    showNotification('Task updated!', 'success');
+                }
+            }
+        }
+
+        function clearCompleted() {
+            const completedTasks = tasks.filter(t => t.completed);
+            if (completedTasks.length === 0) {
+                showNotification('No completed tasks to clear!', 'error');
+                return;
+            }
+
+            if (confirm(`Delete ${completedTasks.length} completed task(s)?`)) {
+                tasks = tasks.filter(t => !t.completed);
+                saveTasks();
+                renderTasks();
+                updateStats();
+                showNotification('Completed tasks cleared!', 'success');
+            }
+        }
+
+        function filterByCategory(category) {
+            activeFilter = category;
+            
+            // Update active chip
+            document.querySelectorAll('.category-chip').forEach(chip => {
+                chip.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            renderTasks();
+        }
+
+        function filterTasks() {
+            renderTasks();
+        }
+
+        function renderTasks() {
+            const tasksList = document.getElementById('tasksList');
+            const emptyState = document.getElementById('emptyState');
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+
+            let filteredTasks = tasks;
+
+            // Filter by category
+            if (activeFilter !== 'all') {
+                filteredTasks = filteredTasks.filter(task => task.category === activeFilter);
+            }
+
+            // Filter by search term
+            if (searchTerm) {
+                filteredTasks = filteredTasks.filter(task => 
+                    task.text.toLowerCase().includes(searchTerm)
+                );
+            }
+
+            if (filteredTasks.length === 0) {
+                tasksList.innerHTML = '';
+                emptyState.style.display = 'block';
+                return;
+            }
+
+            emptyState.style.display = 'none';
+
+            // Sort tasks: incomplete first, then by priority, then by due date
+            filteredTasks.sort((a, b) => {
+                if (a.completed !== b.completed) {
+                    return a.completed ? 1 : -1;
+                }
+                
+                const priorityOrder = { high: 3, medium: 2, low: 1 };
+                if (priorityOrder[a.priority] !== priorityOrder[b.priority]) {
+                    return priorityOrder[b.priority] - priorityOrder[a.priority];
+                }
+                
+                return new Date(a.dueDate) - new Date(b.dueDate);
+            });
+
+            tasksList.innerHTML = filteredTasks.map(task => `
+                <div class="task-item ${task.completed ? 'completed' : ''}" data-task-id="${task.id}">
+                    <div class="task-content">
+                        <input type="checkbox" class="task-checkbox" ${task.completed ? 'checked' : ''} 
+                               onchange="toggleTask(${task.id})">
+                        
+                        <div class="task-info">
+                            <div class="task-text">${escapeHtml(task.text)}</div>
+                            <div class="task-meta">
+                                <span class="priority-badge priority-${task.priority}">${task.priority.toUpperCase()}</span>
+                                <span class="category-tag">${task.category.toUpperCase()}</span>
+                                <span><i class="fas fa-calendar"></i> ${formatDate(task.dueDate)}</span>
+                                ${task.completed ? '<span class="task-completed-badge">COMPLETED</span>' : ''}
+                            </div>
+                        </div>
+                        
+                        <div class="task-actions">
+                            <button class="btn btn-primary btn-sm" onclick="editTask(${task.id})" title="Edit">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn btn-danger btn-sm" onclick="deleteTask(${task.id})" title="Delete">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function updateStats() {
+            const total = tasks.length;
+            const completed = tasks.filter(t => t.completed).length;
+            const pending = total - completed;
+            const completionRate = total > 0 ? Math.round((completed / total) * 100) : 0;
+
+            document.getElementById('totalTasks').textContent = total;
+            document.getElementById('completedTasks').textContent = completed;
+            document.getElementById('pendingTasks').textContent = pending;
+            document.getElementById('completionRate').textContent = completionRate + '%';
+
+            // Add animation to stats
+            document.querySelectorAll('.stat-number').forEach(el => {
+                el.style.transform = 'scale(1.1)';
+                setTimeout(() => el.style.transform = 'scale(1)', 200);
+            });
+        }
+
+        function saveTasks() {
+            localStorage.setItem('tasks', JSON.stringify(tasks));
+        }
+
+        function exportTasks() {
+            const dataStr = JSON.stringify(tasks, null, 2);
+            const dataBlob = new Blob([dataStr], {type: 'application/json'});
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'tasks_backup.json';
+            link.click();
+            URL.revokeObjectURL(url);
+            showNotification('Tasks exported!', 'success');
+        }
+
+        function showNotification(message, type = 'success') {
+            const notification = document.createElement('div');
+            notification.className = 'notification';
+            notification.innerHTML = `
+                <i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i>
+                ${message}
+            `;
+            
+            if (type === 'error') {
+                notification.style.background = 'rgba(231, 76, 60, 0.95)';
+            }
+
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.classList.add('fade-out');
+                setTimeout(() => notification.remove(), 500);
+            }, 3000);
+        }
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            const today = new Date();
+            const diffTime = date - today;
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+            if (diffDays === 0) return 'Today';
+            if (diffDays === 1) return 'Tomorrow';
+            if (diffDays === -1) return 'Yesterday';
+            if (diffDays > 0) return `In ${diffDays} days`;
+            return `${Math.abs(diffDays)} days ago`;
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function toggleTheme() {
+            // Theme toggle functionality can be added here
+            showNotification('Theme toggle coming soon!', 'success');
+        }
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey || e.metaKey) {
+                switch(e.key) {
+                    case 'Enter':
+                        if (document.getElementById('todoApp').style.display !== 'none') {
+                            e.preventDefault();
+                            addTask();
+                        }
+                        break;
+                    case 'f':
+                        if (document.getElementById('todoApp').style.display !== 'none') {
+                            e.preventDefault();
+                            document.getElementById('searchInput').focus();
+                        }
+                        break;
+                }
+            }
+        });
+
+        // Auto-save every 30 seconds
+        setInterval(() => {
+            if (tasks.length > 0) {
+                saveTasks();
+            }
+        }, 30000);
+    </script>
+</body>
+</html>
