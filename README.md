@@ -1,4 +1,4 @@
-# Premium TO do list app
+# Premium TO DO LIST APP
 
 A sleek, feature-rich **To-Do List Application** built with HTML, CSS, and vanilla JavaScript. Designed with a modern dark-themed UI, user authentication (mocked), task management, filtering, stats tracking, and more — all running client-side with **zero external dependencies** beyond Bootstrap, Font Awesome, and Chart.js (for future enhancements).
 
